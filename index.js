@@ -47,6 +47,10 @@ function createContainer() {
     board.setAttribute('id', 'board');
     container.appendChild(board);
 
+    const board2 = document.createElement('div');
+    board.setAttribute('id', 'board');
+    container.appendChild(board2);
+
     const br1 = document.createElement('br');
     const br2 = document.createElement('br');
     container.appendChild(br1);
@@ -140,6 +144,30 @@ start.onclick = function () {
 }
 
 function complete() {
+    let seeSol = document.getElementById('seeSol');
+    seeSol.onclick = function () {
+        sudokuSolver(board);
+        for (let r = 0; r < 9; r++) {
+            for (let c = 0; c < 9; c++) {
+                let tile = document.createElement('div')
+                tile.id = r.toString() + "-" + c.toString()
+                if (board[r][c] != "-") {
+                    tile.innerText = board[r][c]
+                    tile.classList.add('alreadyKnown')
+                }
+                if (r == 2 || r == 5) {
+                    tile.classList.add('horizontal-line')
+                }
+                if (c == 2 || c == 5) {
+                    tile.classList.add('vertical-line')
+                }
+                tile.addEventListener('click', selectTile)
+                tile.classList.add('tile')
+                document.getElementById('board2').appendChild(tile)
+            }
+        }
+    }
+
     let pause = document.getElementById('pause');
     pause.onclick = function () {
         clearInterval(measure);
