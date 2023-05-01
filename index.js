@@ -1,12 +1,14 @@
 let sec = 0, min = 0, hour = 0, ms = 0;
 var measure;
 let numselected = null;
-// let complete = false;
 let tileselected = null;
 let errors = 0;
 let startingPage = document.getElementById("startingPage");
 let body = document.getElementById("body");
 let start = document.getElementById('start');
+let board2;
+let board = [];
+let solution = [];
 
 
 let easy = [["5", "3", "-", "-", "7", "-", "-", "-", "-"], ["6", "-", "-", "1", "9", "5", "-", "-", "-"], ["-", "9", "8", "-", "-", "-", "-", "6", "-"], ["8", "-", "-", "-", "6", "-", "-", "-", "3"], ["4", "-", "-", "8", "-", "3", "-", "-", "1"], ["7", "-", "-", "-", "2", "-", "-", "-", "6"], ["-", "6", "-", "-", "-", "-", "2", "8", "-"], ["-", "-", "-", "4", "1", "9", "-", "-", "5"], ["-", "-", "-", "-", "8", "-", "-", "7", "9"]]
@@ -36,8 +38,14 @@ let hard = [
 ]
 
 function createContainer() {
+    const exitButton = document.createElement('button');
+    exitButton.setAttribute('id', 'exit');
+
     const container = document.createElement('div');
     container.setAttribute('id', 'container');
+
+    exitButton.innerHTML = "Get back";
+    container.appendChild(exitButton);
 
     const h2 = document.createElement('h2');
     h2.innerHTML = 'Errors : <span id="errors">0</span> Timer: <span class="timer">00:00:00</span>';
@@ -47,8 +55,9 @@ function createContainer() {
     board.setAttribute('id', 'board');
     container.appendChild(board);
 
-    const board2 = document.createElement('div');
-    board.setAttribute('id', 'board');
+    board2 = document.createElement('div');
+    board2.setAttribute('id', 'board2');
+    board2.setAttribute('class', 'containerNone');
     container.appendChild(board2);
 
     const br1 = document.createElement('br');
@@ -137,7 +146,6 @@ start.onclick = function () {
     var value = document.getElementsByName('level');
     for (var radio of value) {
         if (radio.checked) {
-            console.log(radio.value);
             setGame(radio.value);
         }
     }
@@ -146,6 +154,9 @@ start.onclick = function () {
 function complete() {
     let seeSol = document.getElementById('seeSol');
     seeSol.onclick = function () {
+        board2.classList.remove("containerNone");
+        clearInterval(measure);
+        measure = false;
         sudokuSolver(board);
         for (let r = 0; r < 9; r++) {
             for (let c = 0; c < 9; c++) {
@@ -187,8 +198,21 @@ function complete() {
         }
     }
 
-    let board = [];
-    let solution = [];
+    let exit = document.getElementById('exit');
+    exit.onclick = function () {
+        if (confirm("Do you want to get back?")) {
+            min = 0;
+            sec = 0;
+            hour = 0;
+            timer.innerHTML = getTimer();
+            clearInterval(measure);
+            measure = false;
+            startingPage.classList.remove("containerNone");
+            deleteContainer();
+        } else {
+            measure = setInterval(run, 10);
+        }
+    }
 
     var timer = document.querySelector('.timer');
 
